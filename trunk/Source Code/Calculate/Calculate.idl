@@ -1,0 +1,38 @@
+// Calculate.idl : IDL source for Calculate
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (Calculate.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(8777B92C-3979-4F2D-9811-86F384BCFB4E),
+	dual,
+	nonextensible,
+	helpstring("ICalculateLogic Interface"),
+	pointer_default(unique)
+]
+interface ICalculateLogic : IDispatch{
+	[id(1), helpstring("method CostPerHead")] HRESULT CostPerHead([in] DOUBLE lTotalAmount, [in] LONG lNumOfPeople, [out,retval] DOUBLE* lCostPerHead);
+	[id(2), helpstring("Dummy Method")] HRESULT SomeExtraMethod();
+};
+[
+	uuid(D08C2161-38E5-4D38-AE53-42F1210FF0FC),
+	version(1.0),
+	helpstring("Calculate 1.0 Type Library")
+]
+library CalculateLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(2DF5DC41-2326-46E5-A586-AD916534AB54),
+		helpstring("CalculateLogic Class")
+	]
+	coclass CalculateLogic
+	{
+		[default] interface ICalculateLogic;
+	};
+};
