@@ -1,9 +1,0 @@
-; Calculate.def : Declares the module parameters.
-
-LIBRARY      "Calculate.DLL"
-
-EXPORTS
-	DllCanUnloadNow		PRIVATE
-	DllGetClassObject	PRIVATE
-	DllRegisterServer	PRIVATE
-	DllUnregisterServer	PRIVATE
