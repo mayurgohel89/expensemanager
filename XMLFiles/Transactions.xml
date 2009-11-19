@@ -1,0 +1,8 @@
+<XMLDB>
+  <![CDATA[ 
+  Details = Any comments about the transaction
+  Payee   = UserSession_ID for that user who did the payment 
+  ]]>
+  <TRANSACTION ID="1" Details="Test Transaction 1" DateTime="19/11/2009" Payee="4"/>
+  <TRANSACTION ID="2" Details="Test Transaction 2" DateTime="19/11/2009" Payee="4"/>
+</XMLDB>
