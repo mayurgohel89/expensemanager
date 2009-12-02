@@ -1,5 +1,5 @@
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Calculate", "Calculate\Calculate.vcproj", "{60EDE74E-F387-40EF-9CB1-53BC71F62E23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI_Manager", "UI Manager\UI_Manager.csproj", "{F3C369A5-2175-42CF-ACD4-D525A72579F4}"
