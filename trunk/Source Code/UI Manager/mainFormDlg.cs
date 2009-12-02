@@ -7,7 +7,6 @@ using System.Data;
 
 using CalculateLib; 
 
-
 namespace ExpenseManager
 { 
 	/// <summary>
@@ -55,6 +54,18 @@ namespace ExpenseManager
 
 		public mainFormDlg()
 		{
+            int Mode = Constants.MODE_DB;  
+            //TODO : Read value of Mode from registry
+            if (Constants.MODE_DB == Mode)
+            {
+                // Use static method "Get" to create object of Single Ton Class DBHelper
+                m_dbObj = DBHelper.Get();
+            }
+            else
+            {
+                m_dbObj = XMLHelper.Get();
+            }
+
 			//
 			// Required for Windows Form Designer support
 			//
