@@ -39,7 +39,7 @@ namespace ExpenseManager
         public bool AddUser(string strUserName)
         {
             m_conn.Open();
-            m_sqlCmd = new SqlCommand("sp_AddUser", m_conn);
+            m_sqlCmd = new SqlCommand("sp_AddNewUser", m_conn);
             m_sqlCmd.CommandType = CommandType.StoredProcedure;
             m_sqlCmd.Parameters.Add("@userName", SqlDbType.VarChar).Value = strUserName;
             m_sqlCmd.ExecuteNonQuery();
@@ -105,7 +105,7 @@ namespace ExpenseManager
         public DataSet GetActiveUsers()
 		{
 			m_conn.Open();
-            m_sqlCmd = new SqlCommand("sp_getActiveUsers", m_conn);
+            m_sqlCmd = new SqlCommand("sp_GetActiveUsers", m_conn);
             m_sqlCmd.CommandType = CommandType.StoredProcedure;   
 			m_da = new System.Data.SqlClient.SqlDataAdapter(m_sqlCmd);
 			DataSet ds = new DataSet("DEFAULT_TABLE");
@@ -122,7 +122,7 @@ namespace ExpenseManager
 			SqlTransaction transInsertData = m_conn.BeginTransaction() ;
 			try
 			{
-				m_sqlCmd = new SqlCommand( "sp_GetTransactionId", m_conn ); 
+				m_sqlCmd = new SqlCommand( "sp_AddTransaction", m_conn ); 
 				m_sqlCmd.Transaction =  transInsertData;
 				m_sqlCmd.CommandType = CommandType.StoredProcedure ;
 

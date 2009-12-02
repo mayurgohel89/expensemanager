@@ -13,13 +13,11 @@ namespace ExpenseManager
     {
         #region Member_Variables
         CalculateLogicClass myCalculator = new CalculateLogicClass();
-
-        // Use static method "Get" to create object of Single Ton Class DBHelper
-        IDataHelper m_dbObj = DBHelper.Get();
+        private IDataHelper m_dbObj;
         private ExpenseManager.ExpenseLayout[] userControlArr = new ExpenseLayout[Settings.Default.maxUsers];
 
         private bool m_bResetSharing = false;
-
+        
         private double dTotalAmount = 0;
         private int iCostSharinUsers = 0;
         private int m_iUserIdPayee = -1;
@@ -94,7 +92,7 @@ namespace ExpenseManager
                 DataSet ds = m_dbObj.GetActiveUsers();
                 lstMembers.DataSource = ds.Tables[0];
                 lstMembers.DisplayMember = "UserName";
-                lstMembers.ValueMember = "UserId";
+                lstMembers.ValueMember = "ID";
                 lblInstructions.Text = "1. Enter the amount spent by Payee." + Environment.NewLine
                                      + "2. Enter a valid description." + Environment.NewLine
                                      + "3. Select the name of Payee." + Environment.NewLine
@@ -103,13 +101,13 @@ namespace ExpenseManager
 
                 lstUsers.DataSource = ds.Tables[0];
                 lstUsers.DisplayMember = "UserName";
-                lstUsers.ValueMember = "UserId";
+                lstUsers.ValueMember = "ID";
 
 
                 m_lActiveUsers = ds.Tables[0].Rows.Count;
                 //In case of no active users, Remove Users button shall be disabled.
                 this.btnRemove.Enabled = m_lActiveUsers > Constants.ZERO ? true : false;
-                DataColumn colUserId = ds.Tables[0].Columns["UserId"];
+                DataColumn colUserId = ds.Tables[0].Columns["ID"];
                 DataColumn colUserName = ds.Tables[0].Columns["UserName"];
                 Point ctrlLocation = new Point(Constants.X_CORDINATE, Constants.Y_CORDINATE);
 
