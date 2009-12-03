@@ -1,6 +1,6 @@
 <XMLDB>
-  <USER ID="1" Name="Anugrah" Email=""/>
-  <USER ID="2" Name="Deepak" Email=""/>
-  <USER ID="3" Name="Vivek" Email=""/>
-  <USER ID="4" Name="Aditya" Email="" />
+  <USER ID="1" Name="Anugrah" IsActive="1" StartDate="03/12/2009" EndDate=""/>
+  <USER ID="2" Name="Deepak" IsActive="1" StartDate="03/12/2009" EndDate=""/>
+  <USER ID="3" Name="Vivek" IsActive="1" StartDate="03/12/2009" EndDate=""/>
+  <USER ID="4" Name="Aditya" Email="" IsActive="1" StartDate="03/12/2009" EndDate=""/>
 </XMLDB>
