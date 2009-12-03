@@ -10,11 +10,13 @@ namespace ExpenseManager
     {
         #region Member Variables
         public static XMLHelper m_XMLHelper = null ;
+        private string xmlWorkPath = string.Empty;
         #endregion
 
 		#region constuctors
         private XMLHelper()
 		{
+            xmlWorkPath = @"..\..\..\..\XMLFiles\";   
         }
 		#endregion
 
@@ -59,7 +61,7 @@ namespace ExpenseManager
         public DataSet GetActiveUsers()
 		{
             DataSet ds = new DataSet("DEFAULT_TABLE");
-            // No Logic Implemented Yet.
+            ds.ReadXml(xmlWorkPath + "User.xml", XmlReadMode.Auto);  
             return ds;
 		}
         
