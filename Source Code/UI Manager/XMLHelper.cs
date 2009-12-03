@@ -5,6 +5,7 @@ using System.Collections;
 
 using System.Linq;
 using System.Xml.Linq;
+using System.Collections.Generic;
 
 namespace ExpenseManager
 {
@@ -48,15 +49,29 @@ namespace ExpenseManager
                 {
                     strMessage = "Add USER failed : User with this name already exists.";
                     return false;
-                }                
-                //TODO: Calculate correct value for USER.ID  
-                string strNewUser = String.Format("<USER ID=\"{0}\" UserName=\"{1}\" IsActive=\"1\" StartDate=\"{2}\" EndDate=\"\" />", 99, strUserName, DateTime.Now.ToShortDateString() );
-                XElement xNewUser = XElement.Parse(strNewUser, LoadOptions.None );
+                }
 
-                XElement xmlLastUser = xUsers.Element("XMLDB").Elements("USER").Last();
-                xmlLastUser.AddAfterSelf(xNewUser);
+                string strNewUser;
+                XElement xNewUser;
+                int iUsers = xUsers.Element("XMLDB").Elements("USER").Count() ;
+                if (iUsers > 0)
+                {
+                    //Atlest 1 user exists in the system, increment ID and insert new row as last sibling of <USER>.
+                    XElement xmlLastUser = xUsers.Element("XMLDB").Elements("USER").Last();
+                    int newID = Int16.Parse(xmlLastUser.Attribute("ID").Value) + 1;
+                    strNewUser = String.Format("<USER ID=\"{0}\" UserName=\"{1}\" IsActive=\"1\" StartDate=\"{2}\" EndDate=\"\" />", newID, strUserName, DateTime.Now.ToShortDateString());
+                    xNewUser = XElement.Parse(strNewUser, LoadOptions.None);
+                    xmlLastUser.AddAfterSelf(xNewUser);
+                }
+                else
+                {
+                    //No user exist in the system, create new row with ID = 1 as child of <XMLDB>.
+                    strNewUser = String.Format("<USER ID=\"1\" UserName=\"{0}\" IsActive=\"1\" StartDate=\"{1}\" EndDate=\"\" />", strUserName, DateTime.Now.ToShortDateString());
+                    xNewUser = XElement.Parse(strNewUser, LoadOptions.None);
+                    xUsers.Element("XMLDB").Add(xNewUser);
+                }
+                
                 xUsers.Save(xmlWorkPath + "User.xml");
-
                 bResult = true;
             }
             catch (Exception ex)
