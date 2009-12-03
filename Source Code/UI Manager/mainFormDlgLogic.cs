@@ -461,8 +461,17 @@ namespace ExpenseManager
 
                     if (dgResult.Equals(DialogResult.Yes))
                     {
-                        m_dbObj.AddUser(txtUser.Text);
-                        Application.Exit();
+                        string strMessage = string.Empty;
+                        bool bSuccess = false;
+                        bSuccess = m_dbObj.AddUser(txtUser.Text, ref strMessage);
+                        if (bSuccess)
+                        {
+                            Application.Exit();
+                        }
+                        else
+                        {
+                            MessageBox.Show(this, strMessage, "Add User", MessageBoxButtons.OK, MessageBoxIcon.Error);   
+                        }
                     }
                 }
                 else

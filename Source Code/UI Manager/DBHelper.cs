@@ -36,15 +36,25 @@ namespace ExpenseManager
             return m_DBHelper;
         }
 
-        public bool AddUser(string strUserName)
+        public bool AddUser(string strUserName, ref string strMessage)
         {
-            m_conn.Open();
-            m_sqlCmd = new SqlCommand("sp_AddNewUser", m_conn);
-            m_sqlCmd.CommandType = CommandType.StoredProcedure;
-            m_sqlCmd.Parameters.Add("@userName", SqlDbType.VarChar).Value = strUserName;
-            m_sqlCmd.ExecuteNonQuery();
-            m_conn.Close();
-            return true;
+            bool bResult = false;
+            try
+            {
+                m_conn.Open();
+                m_sqlCmd = new SqlCommand("sp_AddNewUser", m_conn);
+                m_sqlCmd.CommandType = CommandType.StoredProcedure;
+                m_sqlCmd.Parameters.Add("@userName", SqlDbType.VarChar).Value = strUserName;
+                m_sqlCmd.ExecuteNonQuery();
+                m_conn.Close();
+                bResult = true;
+            }
+            catch (Exception ex)
+            {
+                strMessage = ex.Message;
+                bResult = false;
+            }
+            return bResult;
         }
         public bool CanRemoveUser(int iUserId)
         {
