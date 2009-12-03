@@ -1,6 +1,6 @@
 <XMLDB>
-  <USERSESSION ID="5" User_ID="1" InBal="300" OutBal="0" IsActive="1" StartDate="" EndDate=""/>
-  <USERSESSION ID="6" User_ID="2" InBal="0" OutBal="100" IsActive="1" StartDate="" EndDate=""/>
-  <USERSESSION ID="7" User_ID="3" InBal="0" OutBal="100" IsActive="1" StartDate="" EndDate=""/>
-  <USERSESSION ID="8" User_ID="4" InBal="0" OutBal="100" IsActive="1" StartDate="" EndDate=""/>
+  <USERBALANCE User_ID="1" InBal="300" OutBal="0" TotalBal="300"/>
+  <USERBALANCE User_ID="2" InBal="0" OutBal="-100" TotalBal="-100"/>
+  <USERBALANCE User_ID="3" InBal="0" OutBal="-100" TotalBal="-100"/>
+  <USERBALANCE User_ID="4" InBal="0" OutBal="-100" TotalBal="-100"/>
 </XMLDB>
