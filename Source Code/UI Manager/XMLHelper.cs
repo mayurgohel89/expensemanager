@@ -3,9 +3,12 @@ using System.Data;
 using System.Xml;
 using System.Collections;
 
+using System.Linq;
+ 
 
 namespace ExpenseManager
 {
+
     public sealed class XMLHelper : IDataHelper 
     {
         #region Member Variables
@@ -56,12 +59,25 @@ namespace ExpenseManager
             DataSet ds = new DataSet("DEFAULT_TABLE");
             // No Logic Implemented Yet.
             return ds;
-		}
-		
+		}        
+
         public DataSet GetActiveUsers()
 		{
             DataSet ds = new DataSet("DEFAULT_TABLE");
-            ds.ReadXml(xmlWorkPath + "User.xml", XmlReadMode.Auto);  
+            ds.ReadXml(xmlWorkPath + "User.xml", XmlReadMode.InferSchema);  
+            //return ds;
+
+
+            DataTable dt = ds.Tables[0];
+            ds.Tables.Remove(dt);
+
+            var query = from row in dt.AsEnumerable()
+                        where row.Field<string>("IsActive") == "1"
+                        //select new { ID = row.Field<string>("ID"), UserName = row.Field<string>("UserName") };
+                        select row;
+              
+            DataTable dtquery = query.CopyToDataTable();
+            ds.Tables.Add(dtquery); 
             return ds;
 		}
         
