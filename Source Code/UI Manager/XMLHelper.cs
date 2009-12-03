@@ -4,7 +4,7 @@ using System.Xml;
 using System.Collections;
 
 using System.Linq;
- 
+using System.Xml.Linq;
 
 namespace ExpenseManager
 {
@@ -33,9 +33,41 @@ namespace ExpenseManager
             return m_XMLHelper;
         }
 
-        public bool AddUser(string strUserName)
+        public bool AddUser(string strUserName, ref string strMessage)
         {
-            return false;
+            XDocument xUsers ;
+            bool bResult = false;
+            try
+            {
+                xUsers = XDocument.Load(xmlWorkPath + "User.xml");
+                var query = from xNode in xUsers.Element("XMLDB").Elements("USER")
+                            where (string)xNode.Attribute("UserName") == strUserName
+                            select xNode;
+
+                if (query.Count() > 0)
+                {
+                    strMessage = "Add USER failed : User with this name already exists.";
+                    return false;
+                }                
+                //TODO: Calculate correct value for USER.ID  
+                string strNewUser = String.Format("<USER ID=\"{0}\" UserName=\"{1}\" IsActive=\"1\" StartDate=\"{2}\" EndDate=\"\" />", 99, strUserName, DateTime.Now.ToShortDateString() );
+                XElement xNewUser = XElement.Parse(strNewUser, LoadOptions.None );
+
+                XElement xmlLastUser = xUsers.Element("XMLDB").Elements("USER").Last();
+                xmlLastUser.AddAfterSelf(xNewUser);
+                xUsers.Save(xmlWorkPath + "User.xml");
+
+                bResult = true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                xUsers = null;
+            }
+            return bResult;
         }
         public bool CanRemoveUser(int iUserId)
         {
