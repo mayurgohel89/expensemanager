@@ -164,9 +164,26 @@ namespace ExpenseManager
 
 		public DataSet GetTransactionsSumary()
 		{
-            DataSet ds = new DataSet("DEFAULT_TABLE");
-            // No Logic Implemented Yet.
-            return ds;
+            DataSet dsTransSumm = new DataSet("DEFAULT_TABLE");
+            XDocument xmlDB_User, xmlDB_Balance;
+
+            xmlDB_User = XDocument.Load(xmlWorkPath + "User.xml");
+            xmlDB_Balance = XDocument.Load(xmlWorkPath + "UserBalance.xml");
+
+            XElement xResults = new XElement("XMLDB");
+            var query = from userRows in xmlDB_User.Element("XMLDB").Elements("USER")
+                        join  balanceRows in xmlDB_Balance.Element("XMLDB").Elements("USERBALANCE") 
+                        on (string)userRows.Attribute("ID") equals (string)balanceRows.Attribute("User_ID")
+                        where (string)userRows.Attribute ("IsActive") == "1" 
+                        select new XElement("UserBalance", userRows.Attribute("UserName"), balanceRows.Attribute("InBal"), balanceRows.Attribute("OutBal"), balanceRows.Attribute("TotalBal")); 
+
+            foreach (XElement row in query)
+            {
+                xResults.Add(row); 
+            }             
+
+            dsTransSumm.ReadXml(xResults.CreateReader());
+            return dsTransSumm;
 		}        
 
         public DataSet GetActiveUsers()
