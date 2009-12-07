@@ -57,24 +57,22 @@ namespace ExpenseManager
                 int iUsers = xmlDB.Element("XMLDB").Elements("USER").Count() ;
                 if (iUsers > 0)
                 {
-                    //Atlest 1 user exists in the system, increment ID and insert new row as last sibling of <USER>.
+                    //Atlest 1 user exists in the system, increment ID by 1.
                     XElement xmlLastUser = xmlDB.Element("XMLDB").Elements("USER").Last();
                     newID = Int16.Parse(xmlLastUser.Attribute("ID").Value) + 1;
                     strNewUser = String.Format("<USER ID=\"{0}\" UserName=\"{1}\" IsActive=\"1\" StartDate=\"{2}\" EndDate=\"\" />", newID, strUserName, DateTime.Now.ToShortDateString());
-                    xNewUser = XElement.Parse(strNewUser, LoadOptions.None);
-                    xmlLastUser.AddAfterSelf(xNewUser);
                 }
                 else
                 {
-                    //No user exist in the system, create new row with ID = 1 as child of <XMLDB>.
+                    //No user exist in the system, newID will use default value of 1.
                     strNewUser = String.Format("<USER ID=\"{0}\" UserName=\"{1}\" IsActive=\"1\" StartDate=\"{2}\" EndDate=\"\" />", newID, strUserName, DateTime.Now.ToShortDateString());
-                    xNewUser = XElement.Parse(strNewUser, LoadOptions.None);
-                    xmlDB.Element("XMLDB").Add(xNewUser);
                 }
-                
+
+                xNewUser = XElement.Parse(strNewUser, LoadOptions.None);
+                xmlDB.Element("XMLDB").Add(xNewUser);
                 xmlDB.Save(xmlWorkPath + "User.xml");
 
-
+                //Reuse xmlDB to load UserBalance.xml now
                 xmlDB = XDocument.Load(xmlWorkPath + "UserBalance.xml");
                 string strUserBal = String.Format("<USERBALANCE User_ID=\"{0}\" InBal=\"0\" OutBal=\"0\" TotalBal=\"0\" />", newID) ;
                 XElement xUserBal = XElement.Parse (strUserBal, LoadOptions.None); 
