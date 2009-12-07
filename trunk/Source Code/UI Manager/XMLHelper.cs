@@ -20,7 +20,7 @@ namespace ExpenseManager
 		#region constuctors
         private XMLHelper()
 		{
-            xmlWorkPath = @"..\..\..\..\XMLFiles\";   
+            xmlWorkPath = Settings.Default.XMLFilesPath ;   
         }
 		#endregion
 
@@ -53,12 +53,13 @@ namespace ExpenseManager
 
                 string strNewUser;
                 XElement xNewUser;
+                int newID = 1;
                 int iUsers = xmlDB.Element("XMLDB").Elements("USER").Count() ;
                 if (iUsers > 0)
                 {
                     //Atlest 1 user exists in the system, increment ID and insert new row as last sibling of <USER>.
                     XElement xmlLastUser = xmlDB.Element("XMLDB").Elements("USER").Last();
-                    int newID = Int16.Parse(xmlLastUser.Attribute("ID").Value) + 1;
+                    newID = Int16.Parse(xmlLastUser.Attribute("ID").Value) + 1;
                     strNewUser = String.Format("<USER ID=\"{0}\" UserName=\"{1}\" IsActive=\"1\" StartDate=\"{2}\" EndDate=\"\" />", newID, strUserName, DateTime.Now.ToShortDateString());
                     xNewUser = XElement.Parse(strNewUser, LoadOptions.None);
                     xmlLastUser.AddAfterSelf(xNewUser);
@@ -66,12 +67,20 @@ namespace ExpenseManager
                 else
                 {
                     //No user exist in the system, create new row with ID = 1 as child of <XMLDB>.
-                    strNewUser = String.Format("<USER ID=\"1\" UserName=\"{0}\" IsActive=\"1\" StartDate=\"{1}\" EndDate=\"\" />", strUserName, DateTime.Now.ToShortDateString());
+                    strNewUser = String.Format("<USER ID=\"{0}\" UserName=\"{1}\" IsActive=\"1\" StartDate=\"{2}\" EndDate=\"\" />", newID, strUserName, DateTime.Now.ToShortDateString());
                     xNewUser = XElement.Parse(strNewUser, LoadOptions.None);
                     xmlDB.Element("XMLDB").Add(xNewUser);
                 }
                 
                 xmlDB.Save(xmlWorkPath + "User.xml");
+
+
+                xmlDB = XDocument.Load(xmlWorkPath + "UserBalance.xml");
+                string strUserBal = String.Format("<USERBALANCE User_ID=\"{0}\" InBal=\"0\" OutBal=\"0\" TotalBal=\"0\" />", newID) ;
+                XElement xUserBal = XElement.Parse (strUserBal, LoadOptions.None); 
+                xmlDB.Element("XMLDB").Add(xUserBal);
+                xmlDB.Save(xmlWorkPath + "UserBalance.xml");
+
                 bResult = true;
             }
             catch (Exception ex)
