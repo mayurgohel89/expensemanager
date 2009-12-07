@@ -36,12 +36,12 @@ namespace ExpenseManager
 
         public bool AddUser(string strUserName, ref string strMessage)
         {
-            XDocument xUsers ;
+            XDocument xmlDB ;
             bool bResult = false;
             try
             {
-                xUsers = XDocument.Load(xmlWorkPath + "User.xml");
-                var query = from xNode in xUsers.Element("XMLDB").Elements("USER")
+                xmlDB = XDocument.Load(xmlWorkPath + "User.xml");
+                var query = from xNode in xmlDB.Element("XMLDB").Elements("USER")
                             where (string)xNode.Attribute("UserName") == strUserName
                             select xNode;
 
@@ -53,11 +53,11 @@ namespace ExpenseManager
 
                 string strNewUser;
                 XElement xNewUser;
-                int iUsers = xUsers.Element("XMLDB").Elements("USER").Count() ;
+                int iUsers = xmlDB.Element("XMLDB").Elements("USER").Count() ;
                 if (iUsers > 0)
                 {
                     //Atlest 1 user exists in the system, increment ID and insert new row as last sibling of <USER>.
-                    XElement xmlLastUser = xUsers.Element("XMLDB").Elements("USER").Last();
+                    XElement xmlLastUser = xmlDB.Element("XMLDB").Elements("USER").Last();
                     int newID = Int16.Parse(xmlLastUser.Attribute("ID").Value) + 1;
                     strNewUser = String.Format("<USER ID=\"{0}\" UserName=\"{1}\" IsActive=\"1\" StartDate=\"{2}\" EndDate=\"\" />", newID, strUserName, DateTime.Now.ToShortDateString());
                     xNewUser = XElement.Parse(strNewUser, LoadOptions.None);
@@ -68,10 +68,10 @@ namespace ExpenseManager
                     //No user exist in the system, create new row with ID = 1 as child of <XMLDB>.
                     strNewUser = String.Format("<USER ID=\"1\" UserName=\"{0}\" IsActive=\"1\" StartDate=\"{1}\" EndDate=\"\" />", strUserName, DateTime.Now.ToShortDateString());
                     xNewUser = XElement.Parse(strNewUser, LoadOptions.None);
-                    xUsers.Element("XMLDB").Add(xNewUser);
+                    xmlDB.Element("XMLDB").Add(xNewUser);
                 }
                 
-                xUsers.Save(xmlWorkPath + "User.xml");
+                xmlDB.Save(xmlWorkPath + "User.xml");
                 bResult = true;
             }
             catch (Exception ex)
@@ -80,18 +80,72 @@ namespace ExpenseManager
             }
             finally
             {
-                xUsers = null;
+                xmlDB = null;
             }
             return bResult;
         }
         public bool CanRemoveUser(int iUserId)
         {
-            return false;
+            XDocument xmlDB;
+            bool bResult = false;
+            try
+            {
+                string strUserId = iUserId.ToString();
+                xmlDB = XDocument.Load(xmlWorkPath + "UserBalance.xml");
+                var query = from xNode in xmlDB.Element("XMLDB").Elements("USERBALANCE")
+                            where (string)xNode.Attribute("User_ID") == strUserId
+                            select xNode.Attribute("TotalBal") ;
+
+                if (query.Count() > 0)
+                {
+                        double dTotalBal = Double.Parse(query.First().Value);
+                        bResult = (dTotalBal == 0) ? true : false;                        
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                xmlDB = null;
+            }
+            return bResult;
         }
 
         public bool RemoveUser( int iUserId )
         {
-            return false ;
+            XDocument xmlDB;
+            bool bResult = false;
+            try
+            {
+                xmlDB = XDocument.Load(xmlWorkPath + "User.xml");
+                var query = from xNode in xmlDB.Element("XMLDB").Elements("USER")
+                            where (string)xNode.Attribute("ID") == iUserId.ToString ()
+                            select xNode;
+                //TODO: Try to correct above query to update data in query itself.
+
+                if (query.Count() > 0)
+                {
+                    XElement xUser = query.First();
+                    xUser.Attribute("IsActive").Value = "0";
+                    xUser.Attribute("EndDate").Value = DateTime.Now.ToShortDateString();   
+                    xmlDB.Save(xmlWorkPath + "User.xml");
+                    bResult = true;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                bResult = false;
+                throw ex;
+            }
+            finally
+            {
+                xmlDB = null;
+            }
+            return bResult;
         }
 
 		public DataSet GetTransactionsByUserId( int userId, bool bShowPositiveTransactions)
