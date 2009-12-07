@@ -54,16 +54,14 @@ namespace ExpenseManager
 
 		public mainFormDlg()
 		{
-            int Mode = Constants.MODE_DB;  
-            //TODO : Read value of Mode from registry
-            if (Constants.MODE_DB == Mode)
+            if (Constants.MODE_XML == Settings.Default.MODE)
             {
-                // Use static method "Get" to create object of Single Ton Class DBHelper
-                m_dbObj = DBHelper.Get();
+                m_dbObj = XMLHelper.Get();
             }
             else
             {
-                m_dbObj = XMLHelper.Get();
+                // Use static method "Get" to create object of Single Ton Class DBHelper
+                m_dbObj = DBHelper.Get();
             }
 
 			//

@@ -6,10 +6,13 @@
       <Value Profile="(Default)">6</Value>
     </Setting>
     <Setting Name="XMLFilesPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">D:\Downloads\ExpenseManager\XMLDATA</Value>
+      <Value Profile="(Default)">..\..\..\..\XMLFiles\</Value>
     </Setting>
     <Setting Name="DBStringLocalHost" Type="System.String" Scope="Application">
       <Value Profile="(Default)">workstation id=localhost;packet size=4096;integrated security=SSPI;data source=localhost;persist security info=True;initial catalog=ExpenseManager</Value>
+    </Setting>
+    <Setting Name="MODE" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">XML</Value>
     </Setting>
   </Settings>
 </SettingsFile>

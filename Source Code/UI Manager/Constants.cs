@@ -25,7 +25,6 @@ namespace ExpenseManager
         public static string MU_INCORRECT_LENGTH = "Please Enter Name between 6 - 15 Alphabets Only !";
         public static string MU_INITIAL_MSG = "Please Enter New User's Display Name Here ...";
 
-        public static int MODE_DB = 0;
-        public static int MODE_XML = 1;
+        public static string MODE_XML = "XML";
     }
 }

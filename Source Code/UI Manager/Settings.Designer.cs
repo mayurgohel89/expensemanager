@@ -34,7 +34,7 @@ namespace ExpenseManager {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("D:\\Downloads\\ExpenseManager\\XMLDATA")]
+        [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\..\\XMLFiles\\")]
         public string XMLFilesPath {
             get {
                 return ((string)(this["XMLFilesPath"]));
@@ -48,6 +48,15 @@ namespace ExpenseManager {
         public string DBStringLocalHost {
             get {
                 return ((string)(this["DBStringLocalHost"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("XML")]
+        public string MODE {
+            get {
+                return ((string)(this["MODE"]));
             }
         }
     }
