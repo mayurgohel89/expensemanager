@@ -157,8 +157,77 @@ namespace ExpenseManager
 
 		public DataSet GetTransactionsByUserId( int userId, bool bShowPositiveTransactions)
 		{
-			DataSet ds = new DataSet("DEFAULT_TABLE");
-            // No Logic Implemented Yet.
+            DataSet ds = new DataSet("DEFAULT_TABLE");
+            XDocument xmlDB_t, xmlDB_tb;
+            XElement xResults = new XElement("XMLDB");
+
+            xmlDB_t = XDocument.Load(xmlWorkPath + "Transaction.xml");
+            xmlDB_tb = XDocument.Load(xmlWorkPath + "TransactionBreakup.xml");
+            if (bShowPositiveTransactions)
+            {   
+                var query = from t in xmlDB_t.Element("XMLDB").Elements("TRANSACTION")
+                            join tb in xmlDB_tb.Element("XMLDB").Elements("TRANSACTIONBREAKUP")
+                            on (string)t.Attribute("ID") equals (string)tb.Attribute("Transaction_ID")
+                            where (string)tb.Attribute("User_ID") == userId.ToString()
+                            where Double.Parse((string)tb.Attribute("Amount")) > 0
+                            select new XElement("PositiveTrans", t.Attribute("DateTime"), tb.Attribute("Amount"), t.Attribute("Details"));
+
+                foreach (XElement row in query)
+                {
+                    xResults.Add(row);
+                }
+            }
+            else
+            {
+                XDocument xmlDB_u = XDocument.Load(xmlWorkPath + "User.xml");
+                var query = from t in xmlDB_t.Element("XMLDB").Elements("TRANSACTION")
+                            join tb in xmlDB_tb.Element("XMLDB").Elements("TRANSACTIONBREAKUP")
+                            on (string)t.Attribute("ID") equals (string)tb.Attribute("Transaction_ID")
+                            join u in xmlDB_u.Element("XMLDB").Elements("USER")
+                            on (string)t.Attribute("Payee_ID") equals (string)u.Attribute("ID")  
+                            where (string)tb.Attribute("User_ID") == userId.ToString()
+                            where Double.Parse((string)tb.Attribute("Amount")) < 0
+                            select new XElement("PositiveTrans", t.Attribute("DateTime"), tb.Attribute("Amount"), u.Attribute("UserName"),  t.Attribute("Details"));
+
+                foreach (XElement row in query)
+                {
+                    xResults.Add(row);
+                }
+            }
+
+            ds.ReadXml(xResults.CreateReader());
+
+            if (ds.Tables.Count > 0)
+            {
+                if (bShowPositiveTransactions)
+                {
+                    ds.Tables[0].Columns["Amount"].ColumnName = "Amount CREDITED to your Account";
+                }
+                else
+                {
+                    ds.Tables[0].Columns["Amount"].ColumnName = "Amount DEBITED from your Account";
+                    ds.Tables[0].Columns["UserName"].ColumnName = "PAID BY";
+                }
+                ds.Tables[0].Columns["DateTime"].ColumnName = "DATE";
+                ds.Tables[0].Columns["Details"].ColumnName = "DESCRIPTION";
+            }
+            else
+            {
+                //Create an empty table to show headers.
+                DataTable dt = new DataTable();
+                dt.Columns.Add("DATE");
+                if (bShowPositiveTransactions)
+                {
+                   dt.Columns.Add( "Amount CREDITED to your Account");
+                }
+                else
+                {
+                    dt.Columns.Add( "Amount DEBITED from your Account");
+                    dt.Columns.Add( "PAID BY");
+                }
+                dt.Columns.Add("DESCTIPTION");
+                ds.Tables.Add(dt); 
+            }
             return ds;
 		}
 
