@@ -1,15 +1,10 @@
 <XMLDB>
-  <TRANSACTIONBREAKUP Transaction_ID="1">
-    <AMOUNT User_ID="1">-50</AMOUNT>
-    <AMOUNT User_ID="2">-50</AMOUNT>
-    <AMOUNT User_ID="3">-50</AMOUNT>
-    <AMOUNT User_ID="4">150</AMOUNT>
-  </TRANSACTIONBREAKUP>
-
-  <TRANSACTIONBREAKUP Transaction_ID="2">
-    <AMOUNT User_ID="1">-50</AMOUNT>
-    <AMOUNT User_ID="2">-50</AMOUNT>
-    <AMOUNT User_ID="3">-50</AMOUNT>
-    <AMOUNT User_ID="4">150</AMOUNT>
-  </TRANSACTIONBREAKUP>
+  <TRANSACTIONBREAKUP Transaction_ID="1" User_ID="1" Amount="-50" />
+  <TRANSACTIONBREAKUP Transaction_ID="1" User_ID="2" Amount="-50" />
+  <TRANSACTIONBREAKUP Transaction_ID="1" User_ID="3" Amount="-50" />
+  <TRANSACTIONBREAKUP Transaction_ID="1" User_ID="4" Amount="150" />
+  <TRANSACTIONBREAKUP Transaction_ID="2" User_ID="1" Amount="-50" />
+  <TRANSACTIONBREAKUP Transaction_ID="2" User_ID="2" Amount="-50" />
+  <TRANSACTIONBREAKUP Transaction_ID="2" User_ID="3" Amount="-50" />
+  <TRANSACTIONBREAKUP Transaction_ID="2" User_ID="4" Amount="150" />
 </XMLDB>
