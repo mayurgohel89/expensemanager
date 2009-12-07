@@ -359,7 +359,15 @@ namespace ExpenseManager
                     this.pnlDetails.Hide();
                     this.btnClrPrev.Visible = true;
                     this.btnClrPrev.Text = "BACK";
-                    DataGridCell dgCell = new DataGridCell(iRow, 7);
+                    DataGridCell dgCell;
+                    if (Settings.Default.MODE == Constants.MODE_XML)
+                    {
+                        dgCell = new DataGridCell(iRow, 4);
+                    }
+                    else
+                    {
+                        dgCell = new DataGridCell(iRow, 7);
+                    }
                     iUserIdForDetails = Int16.Parse(gridSumary[dgCell].ToString());
 
                     DataSet ds = m_dbObj.GetTransactionsByUserId(iUserIdForDetails, bShowPositiveTransactions);
