@@ -164,7 +164,7 @@ namespace ExpenseManager
 
 		public DataSet GetTransactionsSumary()
 		{
-            DataSet dsTransSumm = new DataSet("DEFAULT_TABLE");
+            DataSet ds = new DataSet("DEFAULT_TABLE");
             XDocument xmlDB_User, xmlDB_Balance;
 
             xmlDB_User = XDocument.Load(xmlWorkPath + "User.xml");
@@ -182,13 +182,13 @@ namespace ExpenseManager
                 xResults.Add(row); 
             }             
 
-            dsTransSumm.ReadXml(xResults.CreateReader());
-            dsTransSumm.Tables[0].Columns["UserName"].ColumnName = "User";
-            dsTransSumm.Tables[0].Columns["InBal"].ColumnName = "POSITIVE DEPOSIT";
-            dsTransSumm.Tables[0].Columns["OutBal"].ColumnName = "CREDIT TAKEN";
-            dsTransSumm.Tables[0].Columns["TotalBal"].ColumnName = "BALANCE";
-            dsTransSumm.Tables[0].Columns["ID"].ColumnName = "USER ID"; 
-            return dsTransSumm;
+            ds.ReadXml(xResults.CreateReader());
+            ds.Tables[0].Columns["UserName"].ColumnName = "User";
+            ds.Tables[0].Columns["InBal"].ColumnName = "POSITIVE DEPOSIT";
+            ds.Tables[0].Columns["OutBal"].ColumnName = "CREDIT TAKEN";
+            ds.Tables[0].Columns["TotalBal"].ColumnName = "BALANCE";
+            ds.Tables[0].Columns["ID"].ColumnName = "USER ID"; 
+            return ds;
 		}        
 
         public DataSet GetActiveUsers()
