@@ -174,8 +174,8 @@ namespace ExpenseManager
             var query = from userRows in xmlDB_User.Element("XMLDB").Elements("USER")
                         join  balanceRows in xmlDB_Balance.Element("XMLDB").Elements("USERBALANCE") 
                         on (string)userRows.Attribute("ID") equals (string)balanceRows.Attribute("User_ID")
-                        where (string)userRows.Attribute ("IsActive") == "1" 
-                        select new XElement("UserBalance", userRows.Attribute("UserName"), balanceRows.Attribute("InBal"), balanceRows.Attribute("OutBal"), balanceRows.Attribute("TotalBal")); 
+                        where (string)userRows.Attribute ("IsActive") == "1"
+                        select new XElement("UserBalance", userRows.Attribute("UserName"), balanceRows.Attribute("InBal"), balanceRows.Attribute("OutBal"), balanceRows.Attribute("TotalBal"), userRows.Attribute("ID")); 
 
             foreach (XElement row in query)
             {
@@ -183,6 +183,11 @@ namespace ExpenseManager
             }             
 
             dsTransSumm.ReadXml(xResults.CreateReader());
+            dsTransSumm.Tables[0].Columns["UserName"].ColumnName = "User";
+            dsTransSumm.Tables[0].Columns["InBal"].ColumnName = "POSITIVE DEPOSIT";
+            dsTransSumm.Tables[0].Columns["OutBal"].ColumnName = "CREDIT TAKEN";
+            dsTransSumm.Tables[0].Columns["TotalBal"].ColumnName = "BALANCE";
+            dsTransSumm.Tables[0].Columns["ID"].ColumnName = "USER ID"; 
             return dsTransSumm;
 		}        
 
