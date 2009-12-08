@@ -78,8 +78,11 @@ namespace ExpenseManager
         private void populateGridSumary()
         {
             DataSet ds = m_dbObj.GetTransactionsSumary();
-            this.gridSumary.DataSource = ds.Tables[0].DefaultView;
-            m_lTotalUsers = ds.Tables[0].Rows.Count;
+            if(ds.Tables .Count > 0)
+            {
+                this.gridSumary.DataSource = ds.Tables[0].DefaultView;
+                m_lTotalUsers = ds.Tables[0].Rows.Count;
+            }
         }
 
         private void mainFormDlg_Load(object sender, System.EventArgs e)
@@ -90,47 +93,55 @@ namespace ExpenseManager
             try
             {
                 DataSet ds = m_dbObj.GetActiveUsers();
-                lstMembers.DataSource = ds.Tables[0];
-                lstMembers.DisplayMember = "UserName";
-                lstMembers.ValueMember = "ID";
-                lblInstructions.Text = "1. Enter the amount spent by Payee." + Environment.NewLine
-                                     + "2. Enter a valid description." + Environment.NewLine
-                                     + "3. Select the name of Payee." + Environment.NewLine
-                                     + "4.  Click 'Next'";
-
-
-                lstUsers.DataSource = ds.Tables[0];
-                lstUsers.DisplayMember = "UserName";
-                lstUsers.ValueMember = "ID";
-
-
-                m_lActiveUsers = ds.Tables[0].Rows.Count;
-                //In case of no active users, Remove Users button shall be disabled.
-                this.btnRemove.Enabled = m_lActiveUsers > Constants.ZERO ? true : false;
-                DataColumn colUserId = ds.Tables[0].Columns["ID"];
-                DataColumn colUserName = ds.Tables[0].Columns["UserName"];
-                Point ctrlLocation = new Point(Constants.X_CORDINATE, Constants.Y_CORDINATE);
-
-
-                this.tabSharing.SuspendLayout();
-
-                for (int iControlNum = 0; iControlNum < m_lActiveUsers; ++iControlNum)
+                if (ds.Tables.Count > 0)
                 {
-                    userControlArr[iControlNum] = new ExpenseLayout();
-                    // Set the user ID for this userControl
-                    userControlArr[iControlNum].UserId = Int32.Parse(ds.Tables[0].Rows[iControlNum][colUserId].ToString());
-                    // Set the userName here
-                    userControlArr[iControlNum].strUserName = ds.Tables[0].Rows[iControlNum][colUserName].ToString();
-                    // Set the checkbox events
-                    userControlArr[iControlNum].ChkBoxChecked += new EventHandler(mainFormDlg_ChkBoxChecked);
-                    userControlArr[iControlNum].ChkBoxUnChecked += new EventHandler(mainFormDlg_ChkBoxUnChecked);
-                    //Set the location of this TserControl
-                    userControlArr[iControlNum].Location = ctrlLocation;
-                    ctrlLocation.Offset(0, Constants.Y_INCREMENT);
-                    //Add this control to group box
-                    this.grpBoxSharing.Controls.Add(this.userControlArr[iControlNum]);
+                    lstMembers.DataSource = ds.Tables[0];
+                    lstMembers.DisplayMember = "UserName";
+                    lstMembers.ValueMember = "ID";
+                    lblInstructions.Text = "1. Enter the amount spent by Payee." + Environment.NewLine
+                                         + "2. Enter a valid description." + Environment.NewLine
+                                         + "3. Select the name of Payee." + Environment.NewLine
+                                         + "4.  Click 'Next'";
+
+
+                    lstUsers.DataSource = ds.Tables[0];
+                    lstUsers.DisplayMember = "UserName";
+                    lstUsers.ValueMember = "ID";
+
+
+                    m_lActiveUsers = ds.Tables[0].Rows.Count;
+                    //In case of no active users, Remove Users button shall be disabled.
+                    this.btnRemove.Enabled = m_lActiveUsers > Constants.ZERO ? true : false;
+                    DataColumn colUserId = ds.Tables[0].Columns["ID"];
+                    DataColumn colUserName = ds.Tables[0].Columns["UserName"];
+                    Point ctrlLocation = new Point(Constants.X_CORDINATE, Constants.Y_CORDINATE);
+
+
+                    this.tabSharing.SuspendLayout();
+
+                    for (int iControlNum = 0; iControlNum < m_lActiveUsers; ++iControlNum)
+                    {
+                        userControlArr[iControlNum] = new ExpenseLayout();
+                        // Set the user ID for this userControl
+                        userControlArr[iControlNum].UserId = Int32.Parse(ds.Tables[0].Rows[iControlNum][colUserId].ToString());
+                        // Set the userName here
+                        userControlArr[iControlNum].strUserName = ds.Tables[0].Rows[iControlNum][colUserName].ToString();
+                        // Set the checkbox events
+                        userControlArr[iControlNum].ChkBoxChecked += new EventHandler(mainFormDlg_ChkBoxChecked);
+                        userControlArr[iControlNum].ChkBoxUnChecked += new EventHandler(mainFormDlg_ChkBoxUnChecked);
+                        //Set the location of this TserControl
+                        userControlArr[iControlNum].Location = ctrlLocation;
+                        ctrlLocation.Offset(0, Constants.Y_INCREMENT);
+                        //Add this control to group box
+                        this.grpBoxSharing.Controls.Add(this.userControlArr[iControlNum]);
+                    }
+                    this.tabSharing.ResumeLayout();
                 }
-                this.tabSharing.ResumeLayout();
+                else
+                {
+                    //No active users found in system, do nothing.
+                }
+                
             }
             catch (DataException ex)
             {
@@ -143,7 +154,7 @@ namespace ExpenseManager
         }
 
 
-        private void button1_Click(object sender, System.EventArgs e)
+        private void btnPaidBy_Click(object sender, System.EventArgs e)
         {
             txtPaidBy.Text = lstMembers.Text.ToString();
             m_iUserIdPayee = Int16.Parse(lstMembers.SelectedValue.ToString());
@@ -412,6 +423,12 @@ namespace ExpenseManager
         {
             try
             {
+                if (lstUsers.Items.Count == 0)
+                {
+                    MessageBox.Show(this, "No User selected for Remove operation.", "Remove User", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);    
+                    return;
+                }
+
                 Int16 iUserId = Int16.Parse(lstUsers.SelectedValue.ToString());
                 if (m_dbObj.CanRemoveUser(iUserId))
                 {
