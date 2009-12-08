@@ -242,17 +242,25 @@ namespace ExpenseManager
             XElement xResults = new XElement("XMLDB");
             var query = from userRows in xmlDB_User.Element("XMLDB").Elements("USER")
                         join  balanceRows in xmlDB_Balance.Element("XMLDB").Elements("USERBALANCE") 
-                        on (string)userRows.Attribute("ID") equals (string)balanceRows.Attribute("User_ID")
-                        where (string)userRows.Attribute ("IsActive") == "1"
-                        select new XElement("UserBalance", userRows.Attribute("UserName"), balanceRows.Attribute("InBal"), balanceRows.Attribute("OutBal"), balanceRows.Attribute("TotalBal"), userRows.Attribute("ID")); 
+                        on (string)userRows.Attribute("ID") equals (string)balanceRows.Attribute("User_ID")                        
+                        select new XElement("UserBalance", userRows.Attribute("UserName"), userRows.Attribute("IsActive"), balanceRows.Attribute("InBal"), balanceRows.Attribute("OutBal"), balanceRows.Attribute("TotalBal"), userRows.Attribute("ID")); 
 
             foreach (XElement row in query)
             {
+                if (row.Attribute("IsActive").Value == "1")
+                {
+                    row.Attribute("IsActive").SetValue("YES");  
+                }
+                else
+                {
+                    row.Attribute("IsActive").SetValue("NO"); 
+                }
                 xResults.Add(row); 
             }             
 
             ds.ReadXml(xResults.CreateReader());
-            ds.Tables[0].Columns["UserName"].ColumnName = "User";
+            ds.Tables[0].Columns["UserName"].ColumnName = "USER";
+            ds.Tables[0].Columns["IsActive"].ColumnName = "IS ACTIVE";
             ds.Tables[0].Columns["InBal"].ColumnName = "POSITIVE DEPOSIT";
             ds.Tables[0].Columns["OutBal"].ColumnName = "CREDIT TAKEN";
             ds.Tables[0].Columns["TotalBal"].ColumnName = "BALANCE";
