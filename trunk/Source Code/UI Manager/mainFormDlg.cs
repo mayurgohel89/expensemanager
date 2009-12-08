@@ -101,6 +101,7 @@ namespace ExpenseManager
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPayment = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblInstructions = new System.Windows.Forms.Label();
             this.txtPaidBy = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.lstMembers = new System.Windows.Forms.ListBox();
@@ -128,7 +129,6 @@ namespace ExpenseManager
             this.btnClrPrev = new System.Windows.Forms.Button();
             this.btnNextDone = new System.Windows.Forms.Button();
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-            this.lblInstructions = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabPayment.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -182,6 +182,15 @@ namespace ExpenseManager
             this.groupBox1.TabIndex = 13;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Instructions";
+            // 
+            // lblInstructions
+            // 
+            this.lblInstructions.AutoSize = true;
+            this.lblInstructions.Location = new System.Drawing.Point(17, 23);
+            this.lblInstructions.Name = "lblInstructions";
+            this.lblInstructions.Size = new System.Drawing.Size(121, 13);
+            this.lblInstructions.TabIndex = 0;
+            this.lblInstructions.Text = "To Be Filled at RunTime";
             // 
             // txtPaidBy
             // 
@@ -422,15 +431,6 @@ namespace ExpenseManager
             // 
             this.errorProvider.ContainerControl = this;
             // 
-            // lblInstructions
-            // 
-            this.lblInstructions.AutoSize = true;
-            this.lblInstructions.Location = new System.Drawing.Point(17, 23);
-            this.lblInstructions.Name = "lblInstructions";
-            this.lblInstructions.Size = new System.Drawing.Size(121, 13);
-            this.lblInstructions.TabIndex = 0;
-            this.lblInstructions.Text = "To Be Filled at RunTime";
-            // 
             // mainFormDlg
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -439,7 +439,9 @@ namespace ExpenseManager
             this.Controls.Add(this.btnClrPrev);
             this.Controls.Add(this.tabControl);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "mainFormDlg";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Expense Manager";
             this.Load += new System.EventHandler(this.mainFormDlg_Load);
             this.tabControl.ResumeLayout(false);
