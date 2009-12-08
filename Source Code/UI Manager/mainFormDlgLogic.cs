@@ -362,7 +362,7 @@ namespace ExpenseManager
                     DataGridCell dgCell;
                     if (Settings.Default.MODE == Constants.MODE_XML)
                     {
-                        dgCell = new DataGridCell(iRow, 4);
+                        dgCell = new DataGridCell(iRow, 5);
                     }
                     else
                     {
