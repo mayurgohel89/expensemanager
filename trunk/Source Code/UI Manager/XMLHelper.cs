@@ -259,32 +259,35 @@ namespace ExpenseManager
             }             
 
             ds.ReadXml(xResults.CreateReader());
-            ds.Tables[0].Columns["UserName"].ColumnName = "USER";
-            ds.Tables[0].Columns["IsActive"].ColumnName = "IS ACTIVE";
-            ds.Tables[0].Columns["InBal"].ColumnName = "POSITIVE DEPOSIT";
-            ds.Tables[0].Columns["OutBal"].ColumnName = "CREDIT TAKEN";
-            ds.Tables[0].Columns["TotalBal"].ColumnName = "BALANCE";
-            ds.Tables[0].Columns["ID"].ColumnName = "USER ID"; 
+            if (ds.Tables.Count > 0)
+            {
+                ds.Tables[0].Columns["UserName"].ColumnName = "USER";
+                ds.Tables[0].Columns["IsActive"].ColumnName = "IS ACTIVE";
+                ds.Tables[0].Columns["InBal"].ColumnName = "POSITIVE DEPOSIT";
+                ds.Tables[0].Columns["OutBal"].ColumnName = "CREDIT TAKEN";
+                ds.Tables[0].Columns["TotalBal"].ColumnName = "BALANCE";
+                ds.Tables[0].Columns["ID"].ColumnName = "USER ID";
+            }
             return ds;
 		}        
 
         public DataSet GetActiveUsers()
 		{
             DataSet ds = new DataSet("DEFAULT_TABLE");
-            ds.ReadXml(m_xmlWorkPath + "User.xml", XmlReadMode.InferSchema);  
-            //return ds;
+            ds.ReadXml(m_xmlWorkPath + "User.xml", XmlReadMode.InferSchema);
+            if (ds.Tables.Count > 0)
+            {
+                DataTable dt = ds.Tables[0];
+                ds.Tables.Remove(dt);
 
+                var query = from row in dt.AsEnumerable()
+                            where row.Field<string>("IsActive") == "1"
+                            //select new { ID = row.Field<string>("ID"), UserName = row.Field<string>("UserName") };
+                            select row;
 
-            DataTable dt = ds.Tables[0];
-            ds.Tables.Remove(dt);
-
-            var query = from row in dt.AsEnumerable()
-                        where row.Field<string>("IsActive") == "1"
-                        //select new { ID = row.Field<string>("ID"), UserName = row.Field<string>("UserName") };
-                        select row;
-              
-            DataTable dtquery = query.CopyToDataTable();
-            ds.Tables.Add(dtquery); 
+                DataTable dtquery = query.CopyToDataTable();
+                ds.Tables.Add(dtquery);
+            }
             return ds;
 		}
         
