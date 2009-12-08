@@ -1,7 +1,3 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <XMLDB>
-  <USERBALANCE User_ID="1" InBal="300" OutBal="0" TotalBal="-100" />
-  <USERBALANCE User_ID="2" InBal="0" OutBal="-100" TotalBal="-100" />
-  <USERBALANCE User_ID="3" InBal="0" OutBal="-100" TotalBal="-100" />
-  <USERBALANCE User_ID="4" InBal="0" OutBal="-100" TotalBal="300" />
 </XMLDB>

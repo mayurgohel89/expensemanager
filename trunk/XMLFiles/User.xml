@@ -1,8 +1,4 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- This document should always contain users in ascending order of USER.ID value-->
 <XMLDB>
-  <USER ID="1" UserName="Anugrah" IsActive="1" StartDate="12/3/2009" EndDate="" />
-  <USER ID="2" UserName="Vivek T" IsActive="1" StartDate="12/3/2009" EndDate="" />
-  <USER ID="3" UserName="Deepak G" IsActive="1" StartDate="12/3/2009" EndDate="" />
-  <USER ID="4" UserName="Rakesh Y" IsActive="1" StartDate="12/3/2009" EndDate="" />
 </XMLDB>
