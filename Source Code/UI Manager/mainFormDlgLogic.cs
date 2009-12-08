@@ -484,12 +484,10 @@ namespace ExpenseManager
                 }
                 else
                 {
-                    MessageBox.Show(
-                        "Can't add more users !" +
+                    MessageBox.Show(this,
+                        "TRIAL version can have max of " + Settings.Default.maxUsers.ToString() + " active users only." +
                         Environment.NewLine +
-                        "Plz update the configuration if you wish to have more than " +
-                        Settings.Default.maxUsers.ToString() +
-                        " active users !", "All users Acive", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        "Please upgrade to PRO licence for ADVANCED version of Expense Manager.", "All users Acive", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
             else
