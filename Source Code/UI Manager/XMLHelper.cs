@@ -14,13 +14,13 @@ namespace ExpenseManager
     {
         #region Member Variables
         public static XMLHelper m_XMLHelper = null ;
-        private string xmlWorkPath = string.Empty;
+        private string m_xmlWorkPath = string.Empty;
         #endregion
 
 		#region constuctors
         private XMLHelper()
 		{
-            xmlWorkPath = Settings.Default.XMLFilesPath ;   
+            m_xmlWorkPath = Settings.Default.XMLFilesPath ;   
         }
 		#endregion
 
@@ -40,7 +40,7 @@ namespace ExpenseManager
             bool bResult = false;
             try
             {
-                xmlDB = XDocument.Load(xmlWorkPath + "User.xml");
+                xmlDB = XDocument.Load(m_xmlWorkPath + "User.xml");
                 var query = from xNode in xmlDB.Element("XMLDB").Elements("USER")
                             where (string)xNode.Attribute("UserName") == strUserName
                             select xNode;
@@ -70,14 +70,14 @@ namespace ExpenseManager
 
                 xNewUser = XElement.Parse(strNewUser, LoadOptions.None);
                 xmlDB.Element("XMLDB").Add(xNewUser);
-                xmlDB.Save(xmlWorkPath + "User.xml");
+                xmlDB.Save(m_xmlWorkPath + "User.xml");
 
-                //Reuse xmlDB to load UserBalance.xml now
-                xmlDB = XDocument.Load(xmlWorkPath + "UserBalance.xml");
+                //Reuse xmlDB_t to load UserBalance.xml now
+                xmlDB = XDocument.Load(m_xmlWorkPath + "UserBalance.xml");
                 string strUserBal = String.Format("<USERBALANCE User_ID=\"{0}\" InBal=\"0\" OutBal=\"0\" TotalBal=\"0\" />", newID) ;
                 XElement xUserBal = XElement.Parse (strUserBal, LoadOptions.None); 
                 xmlDB.Element("XMLDB").Add(xUserBal);
-                xmlDB.Save(xmlWorkPath + "UserBalance.xml");
+                xmlDB.Save(m_xmlWorkPath + "UserBalance.xml");
 
                 bResult = true;
             }
@@ -98,7 +98,7 @@ namespace ExpenseManager
             try
             {
                 string strUserId = iUserId.ToString();
-                xmlDB = XDocument.Load(xmlWorkPath + "UserBalance.xml");
+                xmlDB = XDocument.Load(m_xmlWorkPath + "UserBalance.xml");
                 var query = from xNode in xmlDB.Element("XMLDB").Elements("USERBALANCE")
                             where (string)xNode.Attribute("User_ID") == strUserId
                             select xNode.Attribute("TotalBal") ;
@@ -127,7 +127,7 @@ namespace ExpenseManager
             bool bResult = false;
             try
             {
-                xmlDB = XDocument.Load(xmlWorkPath + "User.xml");
+                xmlDB = XDocument.Load(m_xmlWorkPath + "User.xml");
                 var query = from xNode in xmlDB.Element("XMLDB").Elements("USER")
                             where (string)xNode.Attribute("ID") == iUserId.ToString ()
                             select xNode;
@@ -138,7 +138,7 @@ namespace ExpenseManager
                     XElement xUser = query.First();
                     xUser.Attribute("IsActive").Value = "0";
                     xUser.Attribute("EndDate").Value = DateTime.Now.ToShortDateString();   
-                    xmlDB.Save(xmlWorkPath + "User.xml");
+                    xmlDB.Save(m_xmlWorkPath + "User.xml");
                     bResult = true;
                 }
 
@@ -161,8 +161,8 @@ namespace ExpenseManager
             XDocument xmlDB_t, xmlDB_tb;
             XElement xResults = new XElement("XMLDB");
 
-            xmlDB_t = XDocument.Load(xmlWorkPath + "Transaction.xml");
-            xmlDB_tb = XDocument.Load(xmlWorkPath + "TransactionBreakup.xml");
+            xmlDB_t = XDocument.Load(m_xmlWorkPath + "Transaction.xml");
+            xmlDB_tb = XDocument.Load(m_xmlWorkPath + "TransactionBreakup.xml");
             if (bShowPositiveTransactions)
             {   
                 var query = from t in xmlDB_t.Element("XMLDB").Elements("TRANSACTION")
@@ -179,7 +179,7 @@ namespace ExpenseManager
             }
             else
             {
-                XDocument xmlDB_u = XDocument.Load(xmlWorkPath + "User.xml");
+                XDocument xmlDB_u = XDocument.Load(m_xmlWorkPath + "User.xml");
                 var query = from t in xmlDB_t.Element("XMLDB").Elements("TRANSACTION")
                             join tb in xmlDB_tb.Element("XMLDB").Elements("TRANSACTIONBREAKUP")
                             on (string)t.Attribute("ID") equals (string)tb.Attribute("Transaction_ID")
@@ -236,8 +236,8 @@ namespace ExpenseManager
             DataSet ds = new DataSet("DEFAULT_TABLE");
             XDocument xmlDB_User, xmlDB_Balance;
 
-            xmlDB_User = XDocument.Load(xmlWorkPath + "User.xml");
-            xmlDB_Balance = XDocument.Load(xmlWorkPath + "UserBalance.xml");
+            xmlDB_User = XDocument.Load(m_xmlWorkPath + "User.xml");
+            xmlDB_Balance = XDocument.Load(m_xmlWorkPath + "UserBalance.xml");
 
             XElement xResults = new XElement("XMLDB");
             var query = from userRows in xmlDB_User.Element("XMLDB").Elements("USER")
@@ -263,7 +263,7 @@ namespace ExpenseManager
         public DataSet GetActiveUsers()
 		{
             DataSet ds = new DataSet("DEFAULT_TABLE");
-            ds.ReadXml(xmlWorkPath + "User.xml", XmlReadMode.InferSchema);  
+            ds.ReadXml(m_xmlWorkPath + "User.xml", XmlReadMode.InferSchema);  
             //return ds;
 
 
@@ -282,8 +282,91 @@ namespace ExpenseManager
         
 		public bool addRecordsToDB( int iPayeeId, Hashtable userCostMap , string strDetails)
 		{
-			bool bSuccess = false;
-			return bSuccess;
+            bool bSuccess = false;
+            int iTransactionId = 1;
+            XDocument xmlDB_t, xmlDB_tb, xmlDB_ub;
+            
+            try
+            {
+                //1. Create new Transaction
+                xmlDB_t = XDocument.Load(m_xmlWorkPath + "Transaction.xml");
+                try
+                {
+                    iTransactionId = Int16.Parse((string)xmlDB_t.Element("XMLDB").Elements("TRANSACTION").Last().Attribute("ID"));
+                    iTransactionId++;
+                }
+                catch (Exception)
+                {
+                    //Do nothing as this exception will occur in case if there are no records in transaction.xml
+                }
+
+                string strTrans = String.Format("<TRANSACTION ID=\"{0}\" Details=\"{1}\" DateTime=\"{2}\" Payee_ID=\"{3}\"/>", iTransactionId, strDetails, DateTime.Now, iPayeeId);
+                XElement xTrans = XElement.Parse(strTrans, LoadOptions.None);
+                xmlDB_t.Element("XMLDB").Add(xTrans);
+                xmlDB_t.Save(m_xmlWorkPath + "Transaction.xml");
+                xmlDB_t = null;
+
+                //2. Now update TransactionBreakup
+                xmlDB_tb = XDocument.Load(m_xmlWorkPath + "TransactionBreakup.xml");
+                xmlDB_ub = XDocument.Load(m_xmlWorkPath + "UserBalance.xml");
+                
+                IEnumerator iterKeys = userCostMap.Keys.GetEnumerator();
+                while (iterKeys.MoveNext())
+                {
+                    string strUserID = iterKeys.Current.ToString();
+                    float fAmount = float.Parse(userCostMap[iterKeys.Current].ToString());
+                    string strTransBr = String.Format("<TRANSACTIONBREAKUP Transaction_ID=\"{0}\" User_ID=\"{1}\" Amount=\"{2}\" />", iTransactionId, strUserID , fAmount );
+                    XElement xTransBr = XElement.Parse(strTransBr, LoadOptions.None);
+                    xmlDB_tb.Element("XMLDB").Add(xTransBr);
+
+                    var query = from node in xmlDB_ub.Element("XMLDB").Elements("USERBALANCE")
+                                where (string)node.Attribute("User_ID") == strUserID
+                                select node;
+
+                    XElement currNode = query.First();
+                    if (fAmount > 0)
+                    {
+                        //Update InBal and TotalBal
+                        float fInBal = float.Parse ((string)currNode.Attribute("InBal"));
+                        float fTotalBal = float.Parse((string)currNode.Attribute("TotalBal"));
+
+                        fInBal = fInBal + fAmount;
+                        fTotalBal = fTotalBal + fAmount;
+
+                        currNode.Attribute("InBal").Value = fInBal.ToString();
+                        currNode.Attribute("TotalBal").Value = fTotalBal.ToString();
+                    }
+                    else
+                    {
+                        //Update OutBal and TotalBal
+                        float fOutBal = float.Parse((string)currNode.Attribute("OutBal"));
+                        float fTotalBal = float.Parse((string)currNode.Attribute("TotalBal"));
+
+                        fOutBal = fOutBal + fAmount;
+                        fTotalBal = fTotalBal + fAmount;
+
+                        currNode.Attribute("OutBal").Value = fOutBal.ToString();
+                        currNode.Attribute("TotalBal").Value = fTotalBal.ToString();
+                    }
+                }
+
+                xmlDB_tb.Save(m_xmlWorkPath + "TransactionBreakup.xml");
+                xmlDB_ub.Save(m_xmlWorkPath + "UserBalance.xml");
+ 
+                bSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                xmlDB_t = null;
+                xmlDB_tb = null;
+                xmlDB_ub = null;
+
+            }
+            return bSuccess;
 		}
 		#endregion
 
