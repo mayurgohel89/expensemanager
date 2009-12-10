@@ -156,8 +156,19 @@ namespace ExpenseManager
 
         private void btnPaidBy_Click(object sender, System.EventArgs e)
         {
-            txtPaidBy.Text = lstMembers.Text.ToString();
-            m_iUserIdPayee = Int16.Parse(lstMembers.SelectedValue.ToString());
+            if (lstMembers.Items.Count > 0)
+            {
+                m_iUserIdPayee = Int16.Parse(lstMembers.SelectedValue.ToString());
+                txtPaidBy.Text = lstMembers.Text.ToString();
+            }
+            else
+            {
+                 DialogResult dlgAddUsers = MessageBox.Show(this, "No Active Users exist in system, Would you like to add them now?", "Add Payee", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                 if (dlgAddUsers == DialogResult.OK)
+                 {
+                     tabControl.SelectedIndex = 3; 
+                 }
+            }
         }
 
         private void btnNext_Click(object sender, System.EventArgs e)
