@@ -10,11 +10,17 @@ using System.Collections.Generic;
 namespace ExpenseManager
 {
 
+
     public sealed class XMLHelper : IDataHelper 
     {
         #region Member Variables
         public static XMLHelper m_XMLHelper = null ;
         private string m_xmlWorkPath = string.Empty;
+
+        private static string XML_ELEMENT_USER = "<USER ID=\"{0}\" UserName=\"{1}\" IsActive=\"1\" StartDate=\"{2}\" EndDate=\"\" />";
+        private static string XML_ELEMENT_USERBALANCE = "<USERBALANCE User_ID=\"{0}\" InBal=\"{1}\" OutBal=\"{2}\" TotalBal=\"{3}\" />";
+        private static string XML_ELEMENT_TRANSACTION = "<TRANSACTION ID=\"{0}\" Details=\"{1}\" DateTime=\"{2}\" Payee_ID=\"{3}\"/>";
+        private static string XML_ELEMENT_TRANSACTIONBREAKUP = "<TRANSACTIONBREAKUP Transaction_ID=\"{0}\" User_ID=\"{1}\" Amount=\"{2}\" />";
         #endregion
 
 		#region constuctors
@@ -60,12 +66,12 @@ namespace ExpenseManager
                     //Atlest 1 user exists in the system, increment ID by 1.
                     XElement xmlLastUser = xmlDB.Element("XMLDB").Elements("USER").Last();
                     newID = Int16.Parse(xmlLastUser.Attribute("ID").Value) + 1;
-                    strNewUser = String.Format("<USER ID=\"{0}\" UserName=\"{1}\" IsActive=\"1\" StartDate=\"{2}\" EndDate=\"\" />", newID, strUserName, DateTime.Now.ToShortDateString());
+                    strNewUser = String.Format(XML_ELEMENT_USER, newID, strUserName, DateTime.Now.ToShortDateString());
                 }
                 else
                 {
                     //No user exist in the system, newID will use default value of 1.
-                    strNewUser = String.Format("<USER ID=\"{0}\" UserName=\"{1}\" IsActive=\"1\" StartDate=\"{2}\" EndDate=\"\" />", newID, strUserName, DateTime.Now.ToShortDateString());
+                    strNewUser = String.Format(XML_ELEMENT_USER, newID, strUserName, DateTime.Now.ToShortDateString());
                 }
 
                 xNewUser = XElement.Parse(strNewUser, LoadOptions.None);
@@ -74,7 +80,7 @@ namespace ExpenseManager
 
                 //Reuse xmlDB_t to load UserBalance.xml now
                 xmlDB = XDocument.Load(m_xmlWorkPath + "UserBalance.xml");
-                string strUserBal = String.Format("<USERBALANCE User_ID=\"{0}\" InBal=\"0\" OutBal=\"0\" TotalBal=\"0\" />", newID) ;
+                string strUserBal = String.Format(XML_ELEMENT_USERBALANCE, newID, 0, 0, 0) ;
                 XElement xUserBal = XElement.Parse (strUserBal, LoadOptions.None); 
                 xmlDB.Element("XMLDB").Add(xUserBal);
                 xmlDB.Save(m_xmlWorkPath + "UserBalance.xml");
@@ -314,7 +320,7 @@ namespace ExpenseManager
                     //Do nothing as this exception will occur in case if there are no records in transaction.xml
                 }
 
-                string strTrans = String.Format("<TRANSACTION ID=\"{0}\" Details=\"{1}\" DateTime=\"{2}\" Payee_ID=\"{3}\"/>", iTransactionId, strDetails, DateTime.Now, iPayeeId);
+                string strTrans = String.Format(XML_ELEMENT_TRANSACTION, iTransactionId, strDetails, DateTime.Now, iPayeeId);
                 XElement xTrans = XElement.Parse(strTrans, LoadOptions.None);
                 xmlDB_t.Element("XMLDB").Add(xTrans);
                 xmlDB_t.Save(m_xmlWorkPath + "Transaction.xml");
@@ -329,7 +335,7 @@ namespace ExpenseManager
                 {
                     string strUserID = iterKeys.Current.ToString();
                     float fAmount = float.Parse(userCostMap[iterKeys.Current].ToString());
-                    string strTransBr = String.Format("<TRANSACTIONBREAKUP Transaction_ID=\"{0}\" User_ID=\"{1}\" Amount=\"{2}\" />", iTransactionId, strUserID , fAmount );
+                    string strTransBr = String.Format(XML_ELEMENT_TRANSACTIONBREAKUP, iTransactionId, strUserID , fAmount );
                     XElement xTransBr = XElement.Parse(strTransBr, LoadOptions.None);
                     xmlDB_tb.Element("XMLDB").Add(xTransBr);
 
