@@ -285,8 +285,11 @@ namespace ExpenseManager
                             //select new { ID = row.Field<string>("ID"), UserName = row.Field<string>("UserName") };
                             select row;
 
-                DataTable dtquery = query.CopyToDataTable();
-                ds.Tables.Add(dtquery);
+                if (query.Count() > 0)
+                {
+                    DataTable dtquery = query.CopyToDataTable();
+                    ds.Tables.Add(dtquery);
+                }
             }
             return ds;
 		}
