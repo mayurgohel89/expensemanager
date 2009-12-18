@@ -141,15 +141,30 @@ namespace ExpenseManager
                 {
                     //No active users found in system, do nothing.
                 }
-                
+
             }
             catch (DataException ex)
             {
-                MessageBox.Show(null, ex.Message.ToString(), "DataBase Error Caught !");
+                MessageBox.Show(this, ex.Message.ToString(), "Database Error !");
+            }
+            catch (System.IO.DirectoryNotFoundException ex)
+            {
+                string strErrMsg = "Apllication failed to start due to following error:" +
+                    Environment.NewLine +
+                    Environment.NewLine +
+                    ex.Message;
+
+                MessageBox.Show(this, strErrMsg, "XML Files Error !", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(null, ex.Message.ToString(), "Error Caught !");
+                string strErrMsg = "Please report error details given below:" + 
+                                    Environment.NewLine + 
+                                    Environment.NewLine +
+                                    ex.Message;  
+ 
+                MessageBox.Show(this, strErrMsg, "System Error !");
             }
         }
 

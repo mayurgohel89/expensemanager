@@ -34,7 +34,7 @@ namespace ExpenseManager {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("..\\..\\..\\..\\XMLFiles\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("XMLFiles\\")]
         public string XMLFilesPath {
             get {
                 return ((string)(this["XMLFilesPath"]));
