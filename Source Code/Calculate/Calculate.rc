@@ -69,11 +69,10 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "TODO: <Company name>"
-            VALUE "FileDescription", "TODO: <File description>"
+            VALUE "FileDescription", "C++ Cost Planning Engine"
             VALUE "FileVersion", "1.0.0.1"
-            VALUE "LegalCopyright", "TODO: (c) <Company name>.  All rights reserved."
             VALUE "InternalName", "Calculate.dll"
+            VALUE "LegalCopyright", "(c) Anugrah Atreya.  All rights reserved."
             VALUE "OriginalFilename", "Calculate.dll"
             VALUE "ProductName", "TODO: <Product name>"
             VALUE "ProductVersion", "1.0.0.1"
@@ -102,7 +101,7 @@ IDR_CALCULATELOGICIMPL  REGISTRY                "CalculateLogicImpl.rgs"
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO 
 BEGIN
-    IDD_DIALOG_CALC, DIALOG
+    "IDD_DIALOG_CALC", DIALOG
     BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 179
@@ -119,8 +118,7 @@ END
 //
 
 IDD_DIALOG_CALC DIALOGEX 0, 0, 186, 95
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Add Dialog"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
