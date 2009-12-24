@@ -43,20 +43,20 @@ namespace ExpenseManager {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("workstation id=localhost;packet size=4096;integrated security=SSPI;data source=lo" +
-            "calhost;persist security info=True;initial catalog=ExpenseManager")]
-        public string DBStringLocalHost {
+        [global::System.Configuration.DefaultSettingValueAttribute("DB")]
+        public string MODE {
             get {
-                return ((string)(this["DBStringLocalHost"]));
+                return ((string)(this["MODE"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("XML")]
-        public string MODE {
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost;Initial Catalog=ExpenseManager;Integrated Security=True")]
+        public string ExpenseManagerConnectionString {
             get {
-                return ((string)(this["MODE"]));
+                return ((string)(this["ExpenseManagerConnectionString"]));
             }
         }
     }
