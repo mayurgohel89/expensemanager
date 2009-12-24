@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="Linq2Sql">
+  <DataContextMoniker Name="/Linq2SqlDataContext" />
+  <nestedChildShapes>
+    <classShape Id="c373116c-7c59-4e09-8426-e16f33436015" absoluteBounds="0.875, 0.5, 2, 1.75354248046875">
+      <DataClassMoniker Name="/Linq2SqlDataContext/tabTransaction" />
+      <nestedChildShapes>
+        <elementListCompartment Id="1600ad83-fef8-4c87-b990-cf63de1bead6" absoluteBounds="0.89000000000000012, 0.96, 1.9700000000000002, 1.19354248046875" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="1c1bc055-b990-4f00-b5e1-58c570ba0eb3" absoluteBounds="1.625, 3.25, 2, 1.5891951497395831">
+      <DataClassMoniker Name="/Linq2SqlDataContext/tabUser" />
+      <nestedChildShapes>
+        <elementListCompartment Id="c98b14d9-df17-41b8-abd9-a143e6d8647e" absoluteBounds="1.6400000000000001, 3.71, 1.9700000000000002, 1.0291951497395833" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

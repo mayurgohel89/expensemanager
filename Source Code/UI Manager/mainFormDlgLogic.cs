@@ -5,11 +5,11 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Data;
 
-using CalculateLib; 
+using CalculateLib;
 
 namespace ExpenseManager
 {
-   	public partial class mainFormDlg : System.Windows.Forms.Form
+    public partial class mainFormDlg : System.Windows.Forms.Form
     {
         #region Member_Variables
         CalculateLogicClass myCalculator = new CalculateLogicClass();
@@ -17,7 +17,7 @@ namespace ExpenseManager
         private ExpenseManager.ExpenseLayout[] userControlArr = new ExpenseLayout[Settings.Default.maxUsers];
 
         private bool m_bResetSharing = false;
-        
+
         private double dTotalAmount = 0;
         private int iCostSharinUsers = 0;
         private int m_iUserIdPayee = -1;
@@ -67,7 +67,14 @@ namespace ExpenseManager
                 this.btnClrPrev.Hide();
                 this.btnClrPrev.Location = nxtBtnOrgLocation;
                 this.pnlDetails.Show();
-                this.populateGridSumary();
+                this.populateGridUserBal();
+            }
+            else if (tabControl.SelectedTab == tabTransactions)
+            {
+                this.btnNextDone.Hide();
+                this.btnClrPrev.Hide();
+                this.btnClrPrev.Location = nxtBtnOrgLocation;
+                this.populateGridTransSummary();
             }
             else
             {
@@ -75,14 +82,28 @@ namespace ExpenseManager
             }
         }
 
-        private void populateGridSumary()
+        private void populateGridUserBal()
         {
-            DataSet ds = m_dbObj.GetTransactionsSumary();
-            if(ds.Tables .Count > 0)
+            DataSet ds = m_dbObj.GetUserBalance();
+            if (ds.Tables.Count > 0)
             {
-                this.gridSumary.DataSource = ds.Tables[0].DefaultView;
+                this.gridUserBal.DataSource = ds.Tables[0].DefaultView;
                 m_lTotalUsers = ds.Tables[0].Rows.Count;
             }
+        }
+
+        private void populateGridTransSummary()
+        {
+            DataSet ds = m_dbObj.GetTransactionSummary ();
+            if (ds.Tables.Count > 0)
+            {
+                this.gridTransactions.DataSource = null;
+                //Only assign new data source after setting it to null to remove old cached datasource.                
+                this.gridTransactions.DataSource = ds.Tables[0].DefaultView;
+            }
+            
+            //gridTransactions.TableStyles[0].GridColumnStyles[0].Width = 0;               
+            gridTransactions.Refresh();            
         }
 
         private void mainFormDlg_Load(object sender, System.EventArgs e)
@@ -159,11 +180,11 @@ namespace ExpenseManager
             }
             catch (Exception ex)
             {
-                string strErrMsg = "Please report error details given below:" + 
-                                    Environment.NewLine + 
+                string strErrMsg = "Please report error details given below:" +
                                     Environment.NewLine +
-                                    ex.Message;  
- 
+                                    Environment.NewLine +
+                                    ex.Message;
+
                 MessageBox.Show(this, strErrMsg, "System Error !");
             }
         }
@@ -178,11 +199,11 @@ namespace ExpenseManager
             }
             else
             {
-                 DialogResult dlgAddUsers = MessageBox.Show(this, "No Active Users exist in system, Would you like to add them now?", "Add Payee", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-                 if (dlgAddUsers == DialogResult.OK)
-                 {
-                     tabControl.SelectedIndex = 3; 
-                 }
+                DialogResult dlgAddUsers = MessageBox.Show(this, "No Active Users exist in system, Would you like to add them now?", "Add Payee", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                if (dlgAddUsers == DialogResult.OK)
+                {
+                    tabControl.SelectedIndex = 3;
+                }
             }
         }
 
@@ -280,7 +301,7 @@ namespace ExpenseManager
             if (hshUserCostMap.Values.Count > 0)
             {
                 bool bSuccess = false;
-                bSuccess = m_dbObj.addRecordsToDB(m_iUserIdPayee, hshUserCostMap, txtDescription.Text);
+                bSuccess = m_dbObj.AddTransaction(m_iUserIdPayee, hshUserCostMap, txtDescription.Text);
                 if (bSuccess)
                 {
                     MessageBox.Show(this, "Amount spent on other users has been Credited to Payee's Account.", this.Text);
@@ -388,10 +409,10 @@ namespace ExpenseManager
         private void ShowTransactionsByUserId(bool bShowPositiveTransactions)
         {
             int iUserIdForDetails = Constants.NO_SELECTION;
-            errorProvider.SetError(this.gridSumary, Constants.NULL_STRING);
+            errorProvider.SetError(this.gridUserBal, Constants.NULL_STRING);
             for (int iRow = 0; iRow < m_lTotalUsers; ++iRow)
             {
-                if (this.gridSumary.IsSelected(iRow))
+                if (this.gridUserBal.IsSelected(iRow))
                 {
                     this.pnlDetails.Hide();
                     this.btnClrPrev.Visible = true;
@@ -405,7 +426,7 @@ namespace ExpenseManager
                     {
                         dgCell = new DataGridCell(iRow, 7);
                     }
-                    iUserIdForDetails = Int16.Parse(gridSumary[dgCell].ToString());
+                    iUserIdForDetails = Int16.Parse(gridUserBal[dgCell].ToString());
 
                     DataSet ds = m_dbObj.GetTransactionsByUserId(iUserIdForDetails, bShowPositiveTransactions);
                     this.gridDetails.DataSource = ds.Tables[0].DefaultView;
@@ -413,7 +434,7 @@ namespace ExpenseManager
             }
             if (iUserIdForDetails == Constants.NO_SELECTION)
             {
-                errorProvider.SetError(this.gridSumary, "Please select a ROW to view details !");
+                errorProvider.SetError(this.gridUserBal, "Please select a ROW to view details !");
             }
         }
 
@@ -445,13 +466,33 @@ namespace ExpenseManager
             ShowTransactionsByUserId(false);
         }
 
+        private void lnkVoid_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            errorProvider.SetError(this.gridTransactions, Constants.NULL_STRING);
+            int iCurrentRow = gridTransactions.CurrentRowIndex;
+            if (iCurrentRow == 0 && !gridTransactions.IsSelected(0))
+            {
+                errorProvider.SetError(this.gridTransactions, "Please select a Transaction row to mark it VOID.");            
+            }
+            else
+            {
+                DataGridCell dgc = new DataGridCell(iCurrentRow, 0);
+                int iTranId = Int16.Parse(gridTransactions[dgc].ToString());
+                bool bResult = m_dbObj.VoidTransaction(iTranId);
+                if (bResult)
+                {
+                    populateGridTransSummary();
+                }
+            }
+        }
+
         private void btnRemove_Click(object sender, EventArgs e)
         {
             try
             {
                 if (lstUsers.Items.Count == 0)
                 {
-                    MessageBox.Show(this, "No User selected for Remove operation.", "Remove User", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);    
+                    MessageBox.Show(this, "No User selected for Remove operation.", "Remove User", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
 
@@ -521,7 +562,7 @@ namespace ExpenseManager
                         }
                         else
                         {
-                            MessageBox.Show(this, strMessage, "Add User", MessageBoxButtons.OK, MessageBoxIcon.Error);   
+                            MessageBox.Show(this, strMessage, "Add User", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }

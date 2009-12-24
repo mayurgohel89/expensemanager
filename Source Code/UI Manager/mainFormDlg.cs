@@ -5,55 +5,59 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Data;
 
-using CalculateLib; 
+using CalculateLib;
 
 namespace ExpenseManager
-{ 
-	/// <summary>
-	/// Summary description for Form1.
-	/// </summary>
-	public partial class mainFormDlg : System.Windows.Forms.Form
-	{
-		private System.Windows.Forms.TabControl tabControl;
-		private System.Windows.Forms.TabPage tabUsers;
-		private System.Windows.Forms.Button btnAdd;
-		private System.Windows.Forms.ListBox lstUsers;
-		private System.Windows.Forms.Button btnRemove;
-		private System.Windows.Forms.Label lblUsers;
+{
+    /// <summary>
+    /// Summary description for Form1.
+    /// </summary>
+    public partial class mainFormDlg : System.Windows.Forms.Form
+    {
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage tabUsers;
+        private System.Windows.Forms.Button btnAdd;
+        private System.Windows.Forms.ListBox lstUsers;
+        private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.Label lblUsers;
         private System.Windows.Forms.TextBox txtUser;
         private IContainer components;
-		private System.Windows.Forms.Label lblAmount;
-		private System.Windows.Forms.TextBox txtAmount;
-		private System.Windows.Forms.Label lblDescrition;
-		
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Button btnPaidBy;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox txtPaidBy;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.ListBox lstMembers;
+        private System.Windows.Forms.Label lblAmount;
+        private System.Windows.Forms.TextBox txtAmount;
+        private System.Windows.Forms.Label lblDescrition;
 
-		
-		private System.Windows.Forms.ErrorProvider errorProvider;
-		
-		private System.Windows.Forms.TabPage tabPayment;
-		private System.Windows.Forms.TabPage tabSharing;
-		private System.Windows.Forms.Button btnClrPrev;
-		private System.Windows.Forms.Button btnNextDone;
-		private System.Windows.Forms.TextBox txtDescription;
-		private System.Windows.Forms.Panel pnlDetails;
-		private System.Windows.Forms.TabPage tabDetails;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.LinkLabel lnkPositive;
-		private System.Windows.Forms.LinkLabel lnkNegative;
-		private System.Windows.Forms.DataGrid gridSumary;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnPaidBy;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtPaidBy;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.ListBox lstMembers;
+
+
+        private System.Windows.Forms.ErrorProvider errorProvider;
+
+        private System.Windows.Forms.TabPage tabPayment;
+        private System.Windows.Forms.TabPage tabSharing;
+        private System.Windows.Forms.Button btnClrPrev;
+        private System.Windows.Forms.Button btnNextDone;
+        private System.Windows.Forms.TextBox txtDescription;
+        private System.Windows.Forms.Panel pnlDetails;
+        private System.Windows.Forms.TabPage tabDetails;
+        private System.Windows.Forms.Label lblInstruction;
+        private System.Windows.Forms.LinkLabel lnkPositive;
+        private System.Windows.Forms.LinkLabel lnkNegative;
+        private System.Windows.Forms.DataGrid gridUserBal;
         private System.Windows.Forms.DataGrid gridDetails;
         private Label lblInstructions;
-		private System.Windows.Forms.GroupBox grpBoxSharing;
-		
+        private TabPage tabTransactions;
+        private DataGrid gridTransactions;
+        private LinkLabel lnkVoid;
+        private Label lblInstRemove;
+        private System.Windows.Forms.GroupBox grpBoxSharing;
 
-		public mainFormDlg()
-		{
+
+        public mainFormDlg()
+        {
             if (Constants.MODE_XML == Settings.Default.MODE)
             {
                 m_dbObj = XMLHelper.Get();
@@ -64,38 +68,38 @@ namespace ExpenseManager
                 m_dbObj = DBHelper.Get();
             }
 
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+            //
+            // Required for Windows Form Designer support
+            //
+            InitializeComponent();
 
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
-		}
+            //
+            // TODO: Add any constructor code after InitializeComponent call
+            //
+        }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if (components != null) 
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainFormDlg));
             this.tabControl = new System.Windows.Forms.TabControl();
@@ -117,9 +121,13 @@ namespace ExpenseManager
             this.pnlDetails = new System.Windows.Forms.Panel();
             this.lnkNegative = new System.Windows.Forms.LinkLabel();
             this.lnkPositive = new System.Windows.Forms.LinkLabel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.gridSumary = new System.Windows.Forms.DataGrid();
+            this.lblInstruction = new System.Windows.Forms.Label();
+            this.gridUserBal = new System.Windows.Forms.DataGrid();
             this.gridDetails = new System.Windows.Forms.DataGrid();
+            this.tabTransactions = new System.Windows.Forms.TabPage();
+            this.lnkVoid = new System.Windows.Forms.LinkLabel();
+            this.lblInstRemove = new System.Windows.Forms.Label();
+            this.gridTransactions = new System.Windows.Forms.DataGrid();
             this.tabUsers = new System.Windows.Forms.TabPage();
             this.lblUsers = new System.Windows.Forms.Label();
             this.btnRemove = new System.Windows.Forms.Button();
@@ -135,8 +143,10 @@ namespace ExpenseManager
             this.tabSharing.SuspendLayout();
             this.tabDetails.SuspendLayout();
             this.pnlDetails.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gridSumary)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridUserBal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridDetails)).BeginInit();
+            this.tabTransactions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridTransactions)).BeginInit();
             this.tabUsers.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
             this.SuspendLayout();
@@ -146,6 +156,7 @@ namespace ExpenseManager
             this.tabControl.Controls.Add(this.tabPayment);
             this.tabControl.Controls.Add(this.tabSharing);
             this.tabControl.Controls.Add(this.tabDetails);
+            this.tabControl.Controls.Add(this.tabTransactions);
             this.tabControl.Controls.Add(this.tabUsers);
             this.tabControl.Location = new System.Drawing.Point(20, 8);
             this.tabControl.Name = "tabControl";
@@ -289,15 +300,15 @@ namespace ExpenseManager
             this.tabDetails.Name = "tabDetails";
             this.tabDetails.Size = new System.Drawing.Size(656, 262);
             this.tabDetails.TabIndex = 2;
-            this.tabDetails.Text = "Your Details";
+            this.tabDetails.Text = "User Details";
             this.tabDetails.UseVisualStyleBackColor = true;
             // 
             // pnlDetails
             // 
             this.pnlDetails.Controls.Add(this.lnkNegative);
             this.pnlDetails.Controls.Add(this.lnkPositive);
-            this.pnlDetails.Controls.Add(this.label3);
-            this.pnlDetails.Controls.Add(this.gridSumary);
+            this.pnlDetails.Controls.Add(this.lblInstruction);
+            this.pnlDetails.Controls.Add(this.gridUserBal);
             this.pnlDetails.Location = new System.Drawing.Point(16, 24);
             this.pnlDetails.Name = "pnlDetails";
             this.pnlDetails.Size = new System.Drawing.Size(608, 208);
@@ -323,25 +334,25 @@ namespace ExpenseManager
             this.lnkPositive.Text = "POSITIVE";
             this.lnkPositive.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkPositive_LinkClicked);
             // 
-            // label3
+            // lblInstruction
             // 
-            this.label3.Location = new System.Drawing.Point(16, 176);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(456, 24);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "Select a user above to see details of                         and                " +
+            this.lblInstruction.Location = new System.Drawing.Point(16, 176);
+            this.lblInstruction.Name = "lblInstruction";
+            this.lblInstruction.Size = new System.Drawing.Size(456, 24);
+            this.lblInstruction.TabIndex = 1;
+            this.lblInstruction.Text = "Select a user above to see details of                         and                " +
                 "      Transactions.";
             // 
-            // gridSumary
+            // gridUserBal
             // 
-            this.gridSumary.DataMember = "";
-            this.gridSumary.HeaderForeColor = System.Drawing.SystemColors.ControlText;
-            this.gridSumary.Location = new System.Drawing.Point(16, 16);
-            this.gridSumary.Name = "gridSumary";
-            this.gridSumary.PreferredColumnWidth = 111;
-            this.gridSumary.ReadOnly = true;
-            this.gridSumary.Size = new System.Drawing.Size(562, 152);
-            this.gridSumary.TabIndex = 0;
+            this.gridUserBal.DataMember = "";
+            this.gridUserBal.HeaderForeColor = System.Drawing.SystemColors.ControlText;
+            this.gridUserBal.Location = new System.Drawing.Point(16, 16);
+            this.gridUserBal.Name = "gridUserBal";
+            this.gridUserBal.PreferredColumnWidth = 111;
+            this.gridUserBal.ReadOnly = true;
+            this.gridUserBal.Size = new System.Drawing.Size(562, 152);
+            this.gridUserBal.TabIndex = 0;
             // 
             // gridDetails
             // 
@@ -353,6 +364,49 @@ namespace ExpenseManager
             this.gridDetails.ReadOnly = true;
             this.gridDetails.Size = new System.Drawing.Size(608, 208);
             this.gridDetails.TabIndex = 6;
+            // 
+            // tabTransactions
+            // 
+            this.tabTransactions.Controls.Add(this.lnkVoid);
+            this.tabTransactions.Controls.Add(this.lblInstRemove);
+            this.tabTransactions.Controls.Add(this.gridTransactions);
+            this.tabTransactions.Location = new System.Drawing.Point(4, 22);
+            this.tabTransactions.Name = "tabTransactions";
+            this.tabTransactions.Size = new System.Drawing.Size(656, 262);
+            this.tabTransactions.TabIndex = 4;
+            this.tabTransactions.Text = "Transaction Details";
+            this.tabTransactions.UseVisualStyleBackColor = true;
+            // 
+            // lnkVoid
+            // 
+            this.lnkVoid.AutoSize = true;
+            this.lnkVoid.Location = new System.Drawing.Point(78, 217);
+            this.lnkVoid.Name = "lnkVoid";
+            this.lnkVoid.Size = new System.Drawing.Size(28, 13);
+            this.lnkVoid.TabIndex = 3;
+            this.lnkVoid.TabStop = true;
+            this.lnkVoid.Text = "here";
+            this.lnkVoid.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkVoid_LinkClicked);
+            // 
+            // lblInstRemove
+            // 
+            this.lblInstRemove.AutoSize = true;
+            this.lblInstRemove.Location = new System.Drawing.Point(49, 217);
+            this.lblInstRemove.Name = "lblInstRemove";
+            this.lblInstRemove.Size = new System.Drawing.Size(199, 13);
+            this.lblInstRemove.TabIndex = 2;
+            this.lblInstRemove.Text = "Click          to VOID selected transaction.";
+            // 
+            // gridTransactions
+            // 
+            this.gridTransactions.DataMember = "";
+            this.gridTransactions.HeaderForeColor = System.Drawing.SystemColors.ControlText;
+            this.gridTransactions.Location = new System.Drawing.Point(47, 55);
+            this.gridTransactions.Name = "gridTransactions";
+            this.gridTransactions.PreferredColumnWidth = 111;
+            this.gridTransactions.ReadOnly = true;
+            this.gridTransactions.Size = new System.Drawing.Size(562, 152);
+            this.gridTransactions.TabIndex = 1;
             // 
             // tabUsers
             // 
@@ -366,6 +420,7 @@ namespace ExpenseManager
             this.tabUsers.Size = new System.Drawing.Size(656, 262);
             this.tabUsers.TabIndex = 1;
             this.tabUsers.Text = "Manage Users";
+            this.tabUsers.UseVisualStyleBackColor = true;
             // 
             // lblUsers
             // 
@@ -452,24 +507,28 @@ namespace ExpenseManager
             this.tabSharing.ResumeLayout(false);
             this.tabDetails.ResumeLayout(false);
             this.pnlDetails.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.gridSumary)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridUserBal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridDetails)).EndInit();
+            this.tabTransactions.ResumeLayout(false);
+            this.tabTransactions.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridTransactions)).EndInit();
             this.tabUsers.ResumeLayout(false);
             this.tabUsers.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
             this.ResumeLayout(false);
 
-		}
-		#endregion
+        }
+        #endregion
 
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		static void Main() 
-		{
-			Application.Run(new mainFormDlg());
-		}	
-	}
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+            Application.Run(new mainFormDlg());
+        }
+
+    }
 }
 
